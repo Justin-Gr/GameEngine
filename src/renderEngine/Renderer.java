@@ -17,7 +17,12 @@ public class Renderer {
 
 	private static final float FOV = 70;
 	private static final float NEAR_PLANE = 0.1f;
-	private final float FAR_PLANE = 1000;
+	private static final float FAR_PLANE = 1000;
+	
+	private static final float BACKGROUND_R = 0.5f;
+	private static final float BACKGROUND_G = 0.0f;
+	private static final float BACKGROUND_B = 0.0f;
+	private static final float BACKGROUND_ALPHA = 1.0f;
 	
 	private Matrix4f projectionMatrix;
 	
@@ -30,7 +35,7 @@ public class Renderer {
 	
 	public void prepare() {
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glClearColor(1, 0, 0, 1);
+		GL11.glClearColor(BACKGROUND_R, BACKGROUND_G, BACKGROUND_B, BACKGROUND_ALPHA);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 	}
 	
@@ -40,6 +45,7 @@ public class Renderer {
 		GL30.glBindVertexArray(rawModel.getVaoID());
 		GL20.glEnableVertexAttribArray(0);
 		GL20.glEnableVertexAttribArray(1);
+		GL20.glEnableVertexAttribArray(2);
 		Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition(), entity.getRotX(), entity.getRotY(), entity.getRotZ(), entity.getScale());
 		shader.loadTransformationMatrix(transformationMatrix);		
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
@@ -47,6 +53,7 @@ public class Renderer {
 		GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
 		GL20.glDisableVertexAttribArray(0);
 		GL20.glDisableVertexAttribArray(1);
+		GL20.glDisableVertexAttribArray(2);
 		GL30.glBindVertexArray(0);
 	}
 	
