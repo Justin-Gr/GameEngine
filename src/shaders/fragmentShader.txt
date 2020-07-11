@@ -18,7 +18,7 @@ void main(void) {
 	vec3 unitToLightVector = normalize(pass_toLightVector);
 	
 	float brightness = dot(unitSurfaceNormal, unitToLightVector);	// produit scalaire <normale, lumière>
-	brightness = max(brightness, 0.2);
+	brightness = max(brightness, 0.0);
 	vec3 diffuse = brightness * lightColor;							// coloration de la lumière
 	
 	vec3 unitToCameraVector = normalize(pass_toCameraVector);							// vecteurs unitaires

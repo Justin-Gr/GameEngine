@@ -38,7 +38,7 @@ public class MainGameLoop {
 		
 		TexturedModel texturedDragonModel = new TexturedModel(dragonModel, yellowTexture);
 		Entity dragonEntity = new Entity(texturedDragonModel, new Vector3f(0.0f, -4.0f, -25.0f), 0.0f, 180.0f, 0.0f, 1.0f);
-				
+		
 		TexturedModel texturedCubeModel = new TexturedModel(cubeModel, rainbowTexture);
 		
 		List<Entity> cubes = new ArrayList<Entity>();
@@ -59,6 +59,9 @@ public class MainGameLoop {
 		
 		MasterRenderer renderer = new MasterRenderer();
 		
+		long lastTime = System.nanoTime();
+		long ellapsedTime = 0;
+		long frameCount = 0;
 		while(!Display.isCloseRequested()) {
 			camera.move();
 
@@ -73,6 +76,15 @@ public class MainGameLoop {
 			renderer.render(light, camera);
 			
 			DisplayManager.updateDisplay();
+			
+			frameCount++;
+			ellapsedTime -= lastTime - (lastTime = System.nanoTime());
+			if (ellapsedTime >= 1e9) {
+				long framerate = (long) (1e9 * frameCount / ellapsedTime);
+				Display.setTitle("Game Engine - FPS : " + framerate);
+				frameCount = 0;
+				ellapsedTime = 0;
+			}
 		}
 		
 		renderer.cleanUp();
