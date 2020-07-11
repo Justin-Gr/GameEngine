@@ -23,9 +23,9 @@ public class Renderer {
 	private static final float NEAR_PLANE = 0.1f;
 	private static final float FAR_PLANE = 1000;
 	
-	private static final float BACKGROUND_R = 0.5f;
+	private static final float BACKGROUND_R = 0.0f;
 	private static final float BACKGROUND_G = 0.0f;
-	private static final float BACKGROUND_B = 0.0f;
+	private static final float BACKGROUND_B = 0.2f;
 	private static final float BACKGROUND_ALPHA = 1.0f;
 	
 	private Matrix4f projectionMatrix;

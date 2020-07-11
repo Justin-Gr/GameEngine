@@ -17,16 +17,22 @@ public class Camera {
 	
 	public void move() {
 		if (Keyboard.isKeyDown(Keyboard.KEY_Z)) {
-			position.y += 0.1f;
+			position.y += 0.15f;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-			position.y -= 0.1f;
+			position.y -= 0.15f;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-			position.x += 0.05f;
+			position.x += 0.2f;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-			position.x -= 0.05f;
+			position.x -= 0.2f;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+			position.z -= 0.3f;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
+			position.z += 0.3f;
 		}
 		if (Mouse.hasWheel()) {
 			position.z -= Mouse.getDWheel() * 0.01f;
