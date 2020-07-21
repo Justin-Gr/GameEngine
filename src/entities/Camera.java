@@ -16,10 +16,10 @@ public class Camera {
 	}
 	
 	public void move() {
-		if (Keyboard.isKeyDown(Keyboard.KEY_Z)) {
+		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
 			position.y += 0.15f;
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
 			position.y -= 0.15f;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
@@ -28,11 +28,23 @@ public class Camera {
 		if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
 			position.x -= 0.2f;
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+		if (Keyboard.isKeyDown(Keyboard.KEY_Z)) {
 			position.z -= 0.3f;
 		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
+		if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
 			position.z += 0.3f;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+			pitch -= 0.3f;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
+			pitch += 0.3f;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
+			yaw -= 0.3f;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
+			yaw +=  0.3f;
 		}
 		if (Mouse.hasWheel()) {
 			position.z -= Mouse.getDWheel() * 0.01f;

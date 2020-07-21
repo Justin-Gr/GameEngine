@@ -16,6 +16,7 @@ import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
 import renderEngine.OBJLoader;
+import terrains.Terrain;
 import textures.ModelTexture;
 
 public class MainGameLoop {
@@ -25,37 +26,58 @@ public class MainGameLoop {
 		DisplayManager.createDisplay();
 		
 		Loader loader = new Loader();
-				
-		RawModel dragonModel = OBJLoader.loadObjModel("dragon", loader);
-		RawModel cubeModel = OBJLoader.loadObjModel("cube", loader);
 		
-		ModelTexture yellowTexture = new ModelTexture(loader.loadTexture("light_yellow"));
-		yellowTexture.setShineDamper(10.0f);
-		yellowTexture.setReflectivity(1.0f);
-		ModelTexture rainbowTexture = new ModelTexture(loader.loadTexture("rainbow"));
-		rainbowTexture.setShineDamper(10.0f);
-		rainbowTexture.setReflectivity(1.0f);
-		
-		TexturedModel texturedDragonModel = new TexturedModel(dragonModel, yellowTexture);
-		Entity dragonEntity = new Entity(texturedDragonModel, new Vector3f(0.0f, -4.0f, -25.0f), 0.0f, 180.0f, 0.0f, 1.0f);
-		
-		TexturedModel texturedCubeModel = new TexturedModel(cubeModel, rainbowTexture);
-		
-		List<Entity> cubes = new ArrayList<Entity>();
 		Random r = new Random();
 		
-		for (int i = 0; i < 2000; i++) {
-			float x = r.nextFloat() * 100 - 50;
-			float y = r.nextFloat() * 100 - 50;
-			float z = r.nextFloat() * -300;
-			float rotX = r.nextFloat() * 180.0f;
-			float rotY = r.nextFloat() * 180.0f;
-			float rotZ = r.nextFloat() * 180.0f;
-			cubes.add(new Entity(texturedCubeModel, new Vector3f(x, y, z), rotX, rotY, rotZ, 2.0f));
+		RawModel fernModel = OBJLoader.loadObjModel("fern", loader);
+		ModelTexture fernTexture = new ModelTexture(loader.loadTexture("fern"));
+		fernTexture.setShineDamper(15.0f);
+		fernTexture.setReflectivity(0.3f);
+		fernTexture.setHasTransparency(true);
+		fernTexture.setUseFakeLighting(false);
+		TexturedModel texturedFernModel = new TexturedModel(fernModel, fernTexture);
+		List<Entity> ferns = new ArrayList<Entity>();
+		for (int i = 0; i < 1000; i++) {
+			float x = r.nextFloat() * 1000 - 500;
+			float z = r.nextFloat() * 1000 - 500;
+			ferns.add(new Entity(texturedFernModel, new Vector3f(x, 0, z), 0.0f, 0.0f, 0.0f, 1.0f));
 		}
 		
+		RawModel grassModel = OBJLoader.loadObjModel("grass", loader);
+		ModelTexture grassTexture = new ModelTexture(loader.loadTexture("grass"));
+		grassTexture.setHasTransparency(true);
+		grassTexture.setUseFakeLighting(true);
+		TexturedModel texturedGrassModel = new TexturedModel(grassModel, grassTexture);
+		List<Entity> grasses = new ArrayList<Entity>();
+		for (int i = 0; i < 1000; i++) {
+			float x = r.nextFloat() * 1000 - 500;
+			float z = r.nextFloat() * 1000 - 500;
+			grasses.add(new Entity(texturedGrassModel, new Vector3f(x, 0, z), 0.0f, 0.0f, 0.0f, 2.0f));
+		}
+		
+		RawModel treeModel = OBJLoader.loadObjModel("tree", loader);
+		ModelTexture treeTexture = new ModelTexture(loader.loadTexture("tree"));
+		treeTexture.setShineDamper(10.0f);
+		treeTexture.setReflectivity(0.2f);
+		treeTexture.setHasTransparency(false);
+		treeTexture.setUseFakeLighting(false);
+		TexturedModel texturedTreeModel = new TexturedModel(treeModel, treeTexture);
+		List<Entity> trees = new ArrayList<Entity>();
+		for (int i = 0; i < 1000; i++) {
+			float x = r.nextFloat() * 1000 - 500;
+			float z = r.nextFloat() * 1000 - 500;
+			trees.add(new Entity(texturedTreeModel, new Vector3f(x, 0, z), 0.0f, 0.0f, 0.0f, 1.0f));
+		}
+		
+		ModelTexture terrainTexture = new ModelTexture(loader.loadTexture("terrain_grass"));
+		List<Terrain> terrains = new ArrayList<Terrain>();
+		terrains.add(new Terrain(-1, -1, loader, terrainTexture));
+		terrains.add(new Terrain( 0, -1, loader, terrainTexture));
+		terrains.add(new Terrain(-1,  0, loader, terrainTexture));
+		terrains.add(new Terrain( 0,  0, loader, terrainTexture));
+		
 		Camera camera = new Camera();
-		Light light = new Light(new Vector3f(3000.0f, 2000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
+		Light light = new Light(new Vector3f(3000.0f, 3000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		
 		MasterRenderer renderer = new MasterRenderer();
 		
@@ -65,16 +87,21 @@ public class MainGameLoop {
 		while(!Display.isCloseRequested()) {
 			camera.move();
 
-			dragonEntity.increasePosition(0.0f, 0.0f, 0.0f);
-			dragonEntity.increaseRotation(0.0f, 0.5f, 0.0f);
-			renderer.processEntity(dragonEntity);
-			
-			for (Entity cube : cubes) {
-				cube.increaseRotation(0.2f, 0.2f, 0.0f);
-				renderer.processEntity(cube);
+			for(Terrain terrain : terrains) {
+				renderer.processTerrain(terrain);
 			}
-			renderer.render(light, camera);
 			
+			for (Entity fern : ferns) {
+				renderer.processEntity(fern);
+			}
+			for (Entity grass : grasses) {
+				renderer.processEntity(grass);
+			}
+			for (Entity tree : trees) {
+				renderer.processEntity(tree);
+			}
+			
+			renderer.render(light, camera);
 			DisplayManager.updateDisplay();
 			
 			frameCount++;
