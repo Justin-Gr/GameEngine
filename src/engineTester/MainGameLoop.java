@@ -12,10 +12,11 @@ import entities.Entity;
 import entities.Light;
 import models.RawModel;
 import models.TexturedModel;
+import objConverter.ModelData;
+import objConverter.OBJFileLoader;
 import renderEngine.DisplayManager;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
-import renderEngine.OBJLoader;
 import terrains.Terrain;
 import textures.ModelTexture;
 
@@ -29,7 +30,8 @@ public class MainGameLoop {
 		
 		Random r = new Random();
 		
-		RawModel fernModel = OBJLoader.loadObjModel("fern", loader);
+		ModelData fernData = OBJFileLoader.loadOBJ("fern");
+		RawModel fernModel = loader.loadToVAO(fernData.getVertices(), fernData.getTextureCoords(), fernData.getNormals(), fernData.getIndices());
 		ModelTexture fernTexture = new ModelTexture(loader.loadTexture("fern"));
 		fernTexture.setShineDamper(15.0f);
 		fernTexture.setReflectivity(0.3f);
@@ -43,7 +45,8 @@ public class MainGameLoop {
 			ferns.add(new Entity(texturedFernModel, new Vector3f(x, 0, z), 0.0f, 0.0f, 0.0f, 1.0f));
 		}
 		
-		RawModel grassModel = OBJLoader.loadObjModel("grass", loader);
+		ModelData grassData = OBJFileLoader.loadOBJ("grass");
+		RawModel grassModel = loader.loadToVAO(grassData.getVertices(), grassData.getTextureCoords(), grassData.getNormals(), grassData.getIndices());
 		ModelTexture grassTexture = new ModelTexture(loader.loadTexture("grass"));
 		grassTexture.setHasTransparency(true);
 		grassTexture.setUseFakeLighting(true);
@@ -55,7 +58,8 @@ public class MainGameLoop {
 			grasses.add(new Entity(texturedGrassModel, new Vector3f(x, 0, z), 0.0f, 0.0f, 0.0f, 2.0f));
 		}
 		
-		RawModel treeModel = OBJLoader.loadObjModel("tree", loader);
+		ModelData treeData = OBJFileLoader.loadOBJ("tree");
+		RawModel treeModel = loader.loadToVAO(treeData.getVertices(), treeData.getTextureCoords(), treeData.getNormals(), treeData.getIndices());
 		ModelTexture treeTexture = new ModelTexture(loader.loadTexture("tree"));
 		treeTexture.setShineDamper(10.0f);
 		treeTexture.setReflectivity(0.2f);
@@ -68,6 +72,16 @@ public class MainGameLoop {
 			float z = r.nextFloat() * 1000 - 500;
 			trees.add(new Entity(texturedTreeModel, new Vector3f(x, 0, z), 0.0f, 0.0f, 0.0f, 1.0f));
 		}
+		
+		ModelData sphereData = OBJFileLoader.loadOBJ("sphere");
+		RawModel sphereModel = loader.loadToVAO(sphereData.getVertices(), sphereData.getTextureCoords(), sphereData.getNormals(), sphereData.getIndices());
+		ModelTexture flushedTexture = new ModelTexture(loader.loadTexture("flushed"));
+		flushedTexture.setShineDamper(10.0f);
+		flushedTexture.setReflectivity(1.0f);
+		flushedTexture.setHasTransparency(false);
+		flushedTexture.setUseFakeLighting(false);
+		TexturedModel texturedFlushedModel = new TexturedModel(sphereModel, flushedTexture);
+		Entity flushedEntity = new Entity(texturedFlushedModel, new Vector3f(0.0f, 10.0f, -50.0f), 0.0f, 0.0f, 0.0f, 5.0f);
 		
 		ModelTexture terrainTexture = new ModelTexture(loader.loadTexture("terrain_grass"));
 		List<Terrain> terrains = new ArrayList<Terrain>();
@@ -100,6 +114,8 @@ public class MainGameLoop {
 			for (Entity tree : trees) {
 				renderer.processEntity(tree);
 			}
+			flushedEntity.increaseRotation(0.0f, 0.5f, 0.0f);
+			renderer.processEntity(flushedEntity);
 			
 			renderer.render(light, camera);
 			DisplayManager.updateDisplay();
