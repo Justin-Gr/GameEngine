@@ -8,7 +8,12 @@ in float pass_visibility;
 
 out vec4 out_Color;
 
-uniform sampler2D textureSampler;
+uniform sampler2D backgroundTexture;
+uniform sampler2D rTexture;
+uniform sampler2D gTexture;
+uniform sampler2D bTexture;
+uniform sampler2D blendMap;
+
 uniform vec3 lightColor;
 uniform float shineDamper;
 uniform float reflectivity;
@@ -16,12 +21,29 @@ uniform vec3 skyColor;
 
 void main(void) {
 
+	// TERRAIN TEXTURE
+
+	vec4 blendMapColor = texture(blendMap, pass_textureCoords);
+	
+	float backgroundTextureAmount = 1 - (blendMapColor.r + blendMapColor.g + blendMapColor.b);
+	vec2 tiledCoords = pass_textureCoords * 20;
+	vec4 backgroundTextureColor = texture(backgroundTexture, tiledCoords) * backgroundTextureAmount;
+	vec4 rTextureColor = texture(rTexture, tiledCoords) * blendMapColor.r;
+	vec4 gTextureColor = texture(gTexture, tiledCoords) * blendMapColor.g;
+	vec4 bTextureColor = texture(bTexture, tiledCoords) * blendMapColor.b;
+	
+	vec4 totalTextureColor = backgroundTextureColor + rTextureColor + gTextureColor + bTextureColor;
+
+	// PER-PIXEL LIGHTING
+
 	vec3 unitSurfaceNormal = normalize(pass_surfaceNormal);			// vecteurs unitaires
 	vec3 unitToLightVector = normalize(pass_toLightVector);
 	
 	float brightness = dot(unitSurfaceNormal, unitToLightVector);	// produit scalaire <normale, lumière>
 	brightness = max(brightness, 0.2);
 	vec3 diffuse = brightness * lightColor;							// coloration de la lumière
+	
+	// SPECULAR LIGHTING
 	
 	vec3 unitToCameraVector = normalize(pass_toCameraVector);							// vecteurs unitaires
 	vec3 unitFromLightVector = -unitToLightVector;
@@ -32,7 +54,9 @@ void main(void) {
 	float dampedFactor = pow(specularFactor, shineDamper); 								// sensibilité de l'effet de réflexion
 	vec3 finalSpecular = reflectivity * dampedFactor * lightColor; 						// coloration de la lumière et intensité de la réflexion
 
-	out_Color = vec4(diffuse, 1.0) * texture(textureSampler, pass_textureCoords) + vec4(finalSpecular, 1.0);	// couleur finale
-	out_Color = mix(vec4(skyColor, 1.0), out_Color, pass_visibility);
+	// FINAL COLOR
+
+	out_Color = vec4(diffuse, 1.0) * totalTextureColor + vec4(finalSpecular, 1.0);
+	out_Color = mix(vec4(skyColor, 1.0), out_Color, pass_visibility);				// effet de brouillard
 	
 }

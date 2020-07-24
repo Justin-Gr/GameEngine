@@ -63,8 +63,8 @@ public class MasterRenderer {
 		shader.loadViewMatrix(camera);
 		renderer.render(entities);
 		shader.stop();
-		terrainShader.start();
 		
+		terrainShader.start();
 		terrainShader.loadSkyColor(RED, GREEN, BLUE);
 		terrainShader.loadLight(light);
 		terrainShader.loadViewMatrix(camera);

@@ -14,21 +14,21 @@ uniform mat4 transformationMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform vec3 lightPosition;
-
 uniform float useFakeLighting;
 
+// Fog vars
 const float density = 0.002;
 const float gradient = 10.0;
 
 void main(void) {
 
-	vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
-	vec4 positionRelativeToCam = viewMatrix * worldPosition;
-	gl_Position = projectionMatrix * positionRelativeToCam;
+	vec4 worldPosition = transformationMatrix * vec4(position, 1.0);	// World space
+	vec4 positionRelativeToCam = viewMatrix * worldPosition;			// Eye space
+	gl_Position = projectionMatrix * positionRelativeToCam;				// Clip space
 	
 	vec3 actualNormal = (transformationMatrix * vec4(normal, 0.0)).xyz;
 	if (useFakeLighting > 0.5) {
-		actualNormal = vec3(0.0, 1.0, 0.0);
+		actualNormal = vec3(0.0, 1.0, 0.0);		// Fake normal pointing upwards
 	}
 	
 	float distance = length(positionRelativeToCam.xyz);

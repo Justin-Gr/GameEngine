@@ -15,18 +15,19 @@ uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform vec3 lightPosition;
 
+// Fog vars
 const float density = 0.002;
 const float gradient = 10.0;
 
 void main(void) {
 
-	vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
-	vec4 positionRelativeToCam = viewMatrix * worldPosition;
-	gl_Position = projectionMatrix * positionRelativeToCam;
+	vec4 worldPosition = transformationMatrix * vec4(position, 1.0);	// World space
+	vec4 positionRelativeToCam = viewMatrix * worldPosition;			// Eye space
+	gl_Position = projectionMatrix * positionRelativeToCam;				// Clip space
 	
 	float distance = length(positionRelativeToCam.xyz);
 	
-	pass_textureCoords = textureCoords * 20;
+	pass_textureCoords = textureCoords;
 	pass_surfaceNormal = (transformationMatrix * vec4(normal, 0.0)).xyz;
 	pass_toLightVector = lightPosition - worldPosition.xyz;
 	pass_toCameraVector = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPosition.xyz;

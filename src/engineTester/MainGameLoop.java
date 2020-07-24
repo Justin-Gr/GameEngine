@@ -19,6 +19,8 @@ import renderEngine.Loader;
 import renderEngine.MasterRenderer;
 import terrains.Terrain;
 import textures.ModelTexture;
+import textures.TerrainTexture;
+import textures.TerrainTexturePack;
 
 public class MainGameLoop {
 
@@ -27,6 +29,13 @@ public class MainGameLoop {
 		DisplayManager.createDisplay();
 		
 		Loader loader = new Loader();
+		
+		Camera camera = new Camera();
+		Light light = new Light(new Vector3f(3000.0f, 3000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
+		
+		MasterRenderer renderer = new MasterRenderer();
+		
+		//***************************ENTITIES***************************
 		
 		Random r = new Random();
 		
@@ -39,7 +48,7 @@ public class MainGameLoop {
 		fernTexture.setUseFakeLighting(false);
 		TexturedModel texturedFernModel = new TexturedModel(fernModel, fernTexture);
 		List<Entity> ferns = new ArrayList<Entity>();
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 500; i++) {
 			float x = r.nextFloat() * 1000 - 500;
 			float z = r.nextFloat() * 1000 - 500;
 			ferns.add(new Entity(texturedFernModel, new Vector3f(x, 0, z), 0.0f, 0.0f, 0.0f, 1.0f));
@@ -52,7 +61,7 @@ public class MainGameLoop {
 		grassTexture.setUseFakeLighting(true);
 		TexturedModel texturedGrassModel = new TexturedModel(grassModel, grassTexture);
 		List<Entity> grasses = new ArrayList<Entity>();
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 500; i++) {
 			float x = r.nextFloat() * 1000 - 500;
 			float z = r.nextFloat() * 1000 - 500;
 			grasses.add(new Entity(texturedGrassModel, new Vector3f(x, 0, z), 0.0f, 0.0f, 0.0f, 2.0f));
@@ -67,7 +76,7 @@ public class MainGameLoop {
 		treeTexture.setUseFakeLighting(false);
 		TexturedModel texturedTreeModel = new TexturedModel(treeModel, treeTexture);
 		List<Entity> trees = new ArrayList<Entity>();
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 500; i++) {
 			float x = r.nextFloat() * 1000 - 500;
 			float z = r.nextFloat() * 1000 - 500;
 			trees.add(new Entity(texturedTreeModel, new Vector3f(x, 0, z), 0.0f, 0.0f, 0.0f, 1.0f));
@@ -83,17 +92,22 @@ public class MainGameLoop {
 		TexturedModel texturedFlushedModel = new TexturedModel(sphereModel, flushedTexture);
 		Entity flushedEntity = new Entity(texturedFlushedModel, new Vector3f(0.0f, 10.0f, -50.0f), 0.0f, 0.0f, 0.0f, 5.0f);
 		
-		ModelTexture terrainTexture = new ModelTexture(loader.loadTexture("terrain_grass"));
+		//***************************TERRAINS***************************
+		
+		TerrainTexture backgroundTexture = new TerrainTexture(loader.loadTexture("terrain_grass"));
+		TerrainTexture rTexture = new TerrainTexture(loader.loadTexture("terrain_mud"));
+		TerrainTexture gTexture = new TerrainTexture(loader.loadTexture("terrain_flowers"));
+		TerrainTexture bTexture = new TerrainTexture(loader.loadTexture("terrain_path"));
+		
+		TerrainTexturePack texturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
+		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("terrain_blendMap"));
 		List<Terrain> terrains = new ArrayList<Terrain>();
-		terrains.add(new Terrain(-1, -1, loader, terrainTexture));
-		terrains.add(new Terrain( 0, -1, loader, terrainTexture));
-		terrains.add(new Terrain(-1,  0, loader, terrainTexture));
-		terrains.add(new Terrain( 0,  0, loader, terrainTexture));
+		terrains.add(new Terrain(-1, -1, loader, texturePack, blendMap));
+		terrains.add(new Terrain( 0, -1, loader, texturePack, blendMap));
+		terrains.add(new Terrain(-1,  0, loader, texturePack, blendMap));
+		terrains.add(new Terrain( 0,  0, loader, texturePack, blendMap));
 		
-		Camera camera = new Camera();
-		Light light = new Light(new Vector3f(3000.0f, 3000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
-		
-		MasterRenderer renderer = new MasterRenderer();
+		//***************************GAME LOOP***************************
 		
 		long lastTime = System.nanoTime();
 		long ellapsedTime = 0;
