@@ -1,25 +1,20 @@
 package entities;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.util.vector.Vector3f;
 
 public class Camera {
 
-	private Vector3f position = new Vector3f(0, 10, 0);
-	private float pitch;
-	private float yaw;
-	private float roll;
-	
-	public Camera() {
-		
-	}
+	protected Vector3f position = new Vector3f(0, 10, 0);
+	protected float pitch = 20;
+	protected float yaw = 0;
+	protected float roll = 0;
 	
 	public void move() {
 		checkInputs();
 	}
 	
-	public void checkInputs() {
+	private void checkInputs() {
 		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
 			pitch -= 0.5f;
 		}
@@ -68,7 +63,7 @@ public class Camera {
 		return roll;
 	}
 	
-	public Vector3f getDirection() {
+	private Vector3f getDirection() {
 		double r_pitch = Math.toRadians(pitch);
 		double r_yaw = Math.toRadians(yaw);
 		float x = (float) -(Math.cos(r_pitch) * Math.sin(-r_yaw));
@@ -77,14 +72,14 @@ public class Camera {
 		return new Vector3f(x, y, z);
 	}
 	
-	public Vector3f getXZDirection() {
+	private Vector3f getXZDirection() {
 		double r_yaw = Math.toRadians(yaw);
 		float x = (float) -Math.sin(-r_yaw);
 		float z = (float) -Math.cos(-r_yaw);
 		return new Vector3f(x, 0, z);
 	}
 	
-	public Vector3f getSideDirection() {
+	private Vector3f getSideDirection() {
 		Vector3f direction = getDirection();
 		return new Vector3f(-direction.z, 0, direction.x);
 	}

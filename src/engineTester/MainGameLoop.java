@@ -11,6 +11,7 @@ import entities.Camera;
 import entities.Entity;
 import entities.Light;
 import entities.Player;
+import entities.ThirdPersonCamera;
 import models.RawModel;
 import models.TexturedModel;
 import objConverter.ModelData;
@@ -33,9 +34,6 @@ public class MainGameLoop {
 		
 		MasterRenderer renderer = new MasterRenderer();
 		
-		Camera camera = new Camera();
-		Light light = new Light(new Vector3f(3000.0f, 3000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
-		
 		//***************************ENTITIES***************************
 		
 		Random r = new Random();
@@ -57,7 +55,7 @@ public class MainGameLoop {
 		
 		ModelData grassData = OBJFileLoader.loadOBJ("grass");
 		RawModel grassModel = loader.loadToVAO(grassData.getVertices(), grassData.getTextureCoords(), grassData.getNormals(), grassData.getIndices());
-		ModelTexture grassTexture = new ModelTexture(loader.loadTexture("grass"));
+		ModelTexture grassTexture = new ModelTexture(loader.loadTexture("flower"));
 		grassTexture.setHasTransparency(true);
 		grassTexture.setUseFakeLighting(true);
 		TexturedModel texturedGrassModel = new TexturedModel(grassModel, grassTexture);
@@ -91,7 +89,7 @@ public class MainGameLoop {
 		flushedTexture.setHasTransparency(false);
 		flushedTexture.setUseFakeLighting(false);
 		TexturedModel texturedFlushedModel = new TexturedModel(sphereModel, flushedTexture);
-		Player player = new Player(texturedFlushedModel, new Vector3f(0.0f, 50.0f, -50.0f), 0.0f, 0.0f, 0.0f, 5.0f);
+		Player player = new Player(texturedFlushedModel, new Vector3f(0.0f, 10.0f, -50.0f), 0.0f, 0.0f, 0.0f, 3.0f);
 		
 		//***************************TERRAINS***************************
 		
@@ -109,6 +107,10 @@ public class MainGameLoop {
 		terrains.add(new Terrain( 0,  0, loader, texturePack, blendMap));
 		
 		//***************************GAME LOOP***************************
+		
+//		Camera camera = new Camera();
+		ThirdPersonCamera camera = new ThirdPersonCamera(player);
+		Light light = new Light(new Vector3f(3000.0f, 3000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		
 		long lastTime = System.nanoTime();
 		long ellapsedTime = 0;
