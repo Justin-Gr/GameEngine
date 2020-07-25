@@ -7,7 +7,6 @@ import java.util.Random;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector3f;
 
-import entities.Camera;
 import entities.Entity;
 import entities.Light;
 import entities.Player;
@@ -29,9 +28,7 @@ public class MainGameLoop {
 	public static void main(String[] args) {
 		
 		DisplayManager.createDisplay();
-		
 		Loader loader = new Loader();
-		
 		MasterRenderer renderer = new MasterRenderer();
 		
 		//***************************ENTITIES***************************
@@ -89,7 +86,7 @@ public class MainGameLoop {
 		flushedTexture.setHasTransparency(false);
 		flushedTexture.setUseFakeLighting(false);
 		TexturedModel texturedFlushedModel = new TexturedModel(sphereModel, flushedTexture);
-		Player player = new Player(texturedFlushedModel, new Vector3f(0.0f, 10.0f, -50.0f), 0.0f, 0.0f, 0.0f, 3.0f);
+		Player player = new Player(texturedFlushedModel, new Vector3f(0.0f, 50.0f, -50.0f), 0.0f, 0.0f, 0.0f, 3.0f);
 		
 		//***************************TERRAINS***************************
 		
@@ -108,18 +105,10 @@ public class MainGameLoop {
 		
 		//***************************GAME LOOP***************************
 		
-//		Camera camera = new Camera();
 		ThirdPersonCamera camera = new ThirdPersonCamera(player);
 		Light light = new Light(new Vector3f(3000.0f, 3000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		
-		long lastTime = System.nanoTime();
-		long ellapsedTime = 0;
-		long frameCount = 0;
 		while(!Display.isCloseRequested()) {
-			camera.move();
-			
-			player.move();
-			renderer.processEntity(player);
 			
 			for (Entity fern : ferns) {
 				renderer.processEntity(fern);
@@ -135,17 +124,14 @@ public class MainGameLoop {
 				renderer.processTerrain(terrain);
 			}
 			
+			player.move();
+			renderer.processEntity(player);
+
+			camera.move();
+			
 			renderer.render(light, camera);
 			DisplayManager.updateDisplay();
 			
-			frameCount++;
-			ellapsedTime -= lastTime - (lastTime = System.nanoTime());
-			if (ellapsedTime >= 1e9) {
-				long framerate = (long) (1e9 * frameCount / ellapsedTime);
-				Display.setTitle("Game Engine - FPS : " + framerate);
-				frameCount = 0;
-				ellapsedTime = 0;
-			}
 		}
 		
 		renderer.cleanUp();

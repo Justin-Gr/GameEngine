@@ -11,40 +11,9 @@ public class Camera {
 	protected float roll = 0;
 	
 	public void move() {
-		checkInputs();
-	}
-	
-	private void checkInputs() {
-		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
-			pitch -= 0.5f;
-		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
-			pitch += 0.5f;
-		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
-			yaw -= 0.5f;
-		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
-			yaw +=  0.5f;
-		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_Z)) {
-			position = Vector3f.add(position, (Vector3f) getXZDirection().scale(1.5f), null);
-		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-			position = Vector3f.sub(position, (Vector3f) getXZDirection().scale(1.5f), null);
-		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-			position = Vector3f.add(position, (Vector3f) getSideDirection().scale(1.5f), null);
-		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
-			position = Vector3f.sub(position, (Vector3f) getSideDirection().scale(1.5f), null);
-		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-			position.y += 0.7f;
-		}
-		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-			position.y -= 0.7f;
-		}
+		updatePitch();
+		updateYaw();
+		updateCameraPosition();
 	}
 
 	public Vector3f getPosition() {
@@ -63,24 +32,67 @@ public class Camera {
 		return roll;
 	}
 	
-	private Vector3f getDirection() {
+	private void updatePitch() {
+		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+			pitch -= 0.5f;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
+			pitch += 0.5f;
+		}
+	}
+	
+	private void updateYaw() {
+		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
+			yaw -= 0.5f;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
+			yaw +=  0.5f;
+		}
+	}
+	
+	private void updateCameraPosition() {
+		Vector3f direction = (Vector3f) calculateXZDirection().scale(1.5f);
+		Vector3f sideDirection = (Vector3f) calculateSideDirection().scale(1.5f);
+		
+		if (Keyboard.isKeyDown(Keyboard.KEY_Z)) {
+			Vector3f.add(position, direction, position);
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+			Vector3f.sub(position, direction, position);
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
+			Vector3f.add(position, sideDirection, position);
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_Q)) {
+			Vector3f.sub(position, sideDirection, position);
+		}
+		
+		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
+			position.y += 0.7f;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+			position.y -= 0.7f;
+		}
+	}
+	
+	private Vector3f calculateDirection() {
 		double r_pitch = Math.toRadians(pitch);
 		double r_yaw = Math.toRadians(yaw);
-		float x = (float) -(Math.cos(r_pitch) * Math.sin(-r_yaw));
+		float x = (float)  (Math.cos(r_pitch) * Math.sin(r_yaw));
 		float y = (float) -(Math.sin(r_pitch));
-		float z = (float) -(Math.cos(r_pitch) * Math.cos(-r_yaw));
+		float z = (float) -(Math.cos(r_pitch) * Math.cos(r_yaw));
 		return new Vector3f(x, y, z);
 	}
 	
-	private Vector3f getXZDirection() {
+	private Vector3f calculateXZDirection() {
 		double r_yaw = Math.toRadians(yaw);
-		float x = (float) -Math.sin(-r_yaw);
-		float z = (float) -Math.cos(-r_yaw);
+		float x = (float)  Math.sin(r_yaw);
+		float z = (float) -Math.cos(r_yaw);
 		return new Vector3f(x, 0, z);
 	}
 	
-	private Vector3f getSideDirection() {
-		Vector3f direction = getDirection();
+	private Vector3f calculateSideDirection() {
+		Vector3f direction = calculateDirection();
 		return new Vector3f(-direction.z, 0, direction.x);
 	}
 	

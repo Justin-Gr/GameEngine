@@ -1,5 +1,6 @@
 package entities;
 
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 public class ThirdPersonCamera extends Camera {
@@ -19,16 +20,16 @@ public class ThirdPersonCamera extends Camera {
 	
 	@Override
 	public void move() {
-		calculateZoom();
-		calculatePitch();
-		calculateAngleAroundPlayer();
-		calculateYaw();
+		updateZoom();
+		updatePitch();
+		updateAngleAroundPlayer();
+		updateYaw();
 		float horizontalDistance = calculateHorizontalDistance();
 		float verticalDistance = calculateVerticalDistance();
-		calculateCameraPosition(horizontalDistance, verticalDistance);
+		updateCameraPosition(horizontalDistance, verticalDistance);
 	}
 	
-	private void calculateCameraPosition(float horizontalDistance, float verticalDistance) {
+	private void updateCameraPosition(float horizontalDistance, float verticalDistance) {
 		float theta = player.getRotY() + angleAroundPlayer;
 		float offsetX = (float) (horizontalDistance * Math.sin(Math.toRadians(theta)));
 		float offsetZ = (float) (horizontalDistance * Math.cos(Math.toRadians(theta)));
@@ -45,28 +46,42 @@ public class ThirdPersonCamera extends Camera {
 		return (float) (distanceFromPlayer * Math.sin(Math.toRadians(pitch)));
 	}
 	
-	private void calculateZoom() {
+	private void updateZoom() {
 		float zoomLevel = Mouse.getDWheel() * 0.1f;
 		distanceFromPlayer -= zoomLevel;
 		distanceFromPlayer = Math.max(MIN_DISTANCE, Math.min(MAX_DISTANCE, distanceFromPlayer));
 	}
 	
-	private void calculatePitch() {
+	private void updatePitch() {
 		if (Mouse.isButtonDown(1)) {
 			float pitchChange = Mouse.getDY() * 0.1f;
 			pitch -= pitchChange;
 			pitch = Math.max(0, Math.min(90, pitch));
 		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+			pitch += 1.0f;
+			pitch = Math.min(90, pitch);
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
+			pitch -= 1.0f;
+			pitch = Math.max(0, pitch);
+		}
 	}
 	
-	private void calculateAngleAroundPlayer() {
+	private void updateAngleAroundPlayer() {
 		if (Mouse.isButtonDown(1)) {
 			float angleChange = Mouse.getDX() * 0.3f;
 			angleAroundPlayer -= angleChange;
 		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
+			angleAroundPlayer -= 1.0f;
+		}
+		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
+			angleAroundPlayer += 1.0f;
+		}
 	}
 	
-	private void calculateYaw() {
+	private void updateYaw() {
 		yaw = 180 - (player.getRotY() + angleAroundPlayer);
 	}
 	

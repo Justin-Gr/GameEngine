@@ -39,7 +39,6 @@ public class OBJFileLoader {
 							(float) Float.valueOf(currentLine[3]));
 					Vertex newVertex = new Vertex(vertices.size(), vertex);
 					vertices.add(newVertex);
-
 				} else if (line.startsWith("vt ")) {
 					String[] currentLine = line.split(" ");
 					Vector2f texture = new Vector2f((float) Float.valueOf(currentLine[1]),
@@ -73,11 +72,9 @@ public class OBJFileLoader {
 		float[] verticesArray = new float[vertices.size() * 3];
 		float[] texturesArray = new float[vertices.size() * 2];
 		float[] normalsArray = new float[vertices.size() * 3];
-		float furthest = convertDataToArrays(vertices, textures, normals, verticesArray,
-				texturesArray, normalsArray);
+		float furthest = convertDataToArrays(vertices, textures, normals, verticesArray, texturesArray, normalsArray);
 		int[] indicesArray = convertIndicesListToArray(indices);
-		ModelData data = new ModelData(verticesArray, texturesArray, normalsArray, indicesArray,
-				furthest);
+		ModelData data = new ModelData(verticesArray, texturesArray, normalsArray, indicesArray, furthest);
 		return data;
 	}
 
@@ -91,8 +88,7 @@ public class OBJFileLoader {
 			currentVertex.setNormalIndex(normalIndex);
 			indices.add(index);
 		} else {
-			dealWithAlreadyProcessedVertex(currentVertex, textureIndex, normalIndex, indices,
-					vertices);
+			dealWithAlreadyProcessedVertex(currentVertex, textureIndex, normalIndex, indices, vertices);
 		}
 	}
 
@@ -105,8 +101,7 @@ public class OBJFileLoader {
 	}
 
 	private static float convertDataToArrays(List<Vertex> vertices, List<Vector2f> textures,
-			List<Vector3f> normals, float[] verticesArray, float[] texturesArray,
-			float[] normalsArray) {
+			List<Vector3f> normals, float[] verticesArray, float[] texturesArray, float[] normalsArray) {
 		float furthestPoint = 0;
 		for (int i = 0; i < vertices.size(); i++) {
 			Vertex currentVertex = vertices.get(i);
@@ -135,8 +130,7 @@ public class OBJFileLoader {
 		} else {
 			Vertex anotherVertex = previousVertex.getDuplicateVertex();
 			if (anotherVertex != null) {
-				dealWithAlreadyProcessedVertex(anotherVertex, newTextureIndex, newNormalIndex,
-						indices, vertices);
+				dealWithAlreadyProcessedVertex(anotherVertex, newTextureIndex, newNormalIndex, indices, vertices);
 			} else {
 				Vertex duplicateVertex = new Vertex(vertices.size(), previousVertex.getPosition());
 				duplicateVertex.setTextureIndex(newTextureIndex);
@@ -145,13 +139,12 @@ public class OBJFileLoader {
 				vertices.add(duplicateVertex);
 				indices.add(duplicateVertex.getIndex());
 			}
-
 		}
 	}
 	
 	private static void removeUnusedVertices(List<Vertex> vertices){
 		for(Vertex vertex:vertices){
-			if(!vertex.isSet()){
+			if (!vertex.isSet()){
 				vertex.setTextureIndex(0);
 				vertex.setNormalIndex(0);
 			}

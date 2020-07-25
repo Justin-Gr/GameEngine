@@ -16,6 +16,7 @@ import models.TexturedModel;
 import shaders.StaticShader;
 import shaders.TerrainShader;
 import terrains.Terrain;
+import toolbox.Maths;
 
 public class MasterRenderer {
 
@@ -40,7 +41,7 @@ public class MasterRenderer {
 	
 	public MasterRenderer() {
 		enableCulling();
-		createProjectionMatrix();
+		projectionMatrix = Maths.createProjectionMatrix(Display.getWidth(), Display.getHeight(), FOV, NEAR_PLANE, FAR_PLANE);
 		renderer = new EntityRenderer(shader, projectionMatrix);
 		terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
 	}
@@ -100,21 +101,6 @@ public class MasterRenderer {
 	public void cleanUp() {
 		shader.cleanUp();
 		terrainShader.cleanUp();
-	}
-	
-	private void createProjectionMatrix() {
-		float aspectRatio = (float) Display.getWidth() / (float) Display.getHeight();
-		float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);
-		float x_scale = y_scale / aspectRatio;
-		float frustum_length = FAR_PLANE - NEAR_PLANE;
-
-		projectionMatrix = new Matrix4f();
-		projectionMatrix.m00 = x_scale;
-		projectionMatrix.m11 = y_scale;
-		projectionMatrix.m22 = -((FAR_PLANE + NEAR_PLANE) / frustum_length);
-		projectionMatrix.m23 = -1;
-		projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustum_length);
-		projectionMatrix.m33 = 0;
 	}
 	
 }

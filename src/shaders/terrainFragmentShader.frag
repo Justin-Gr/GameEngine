@@ -21,7 +21,7 @@ uniform vec3 skyColor;
 
 void main(void) {
 
-	// TERRAIN TEXTURE
+	// TERRAIN MULTI-TEXTURING
 
 	vec4 blendMapColor = texture(blendMap, pass_textureCoords);
 	
