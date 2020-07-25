@@ -10,6 +10,7 @@ import org.lwjgl.util.vector.Vector3f;
 import entities.Camera;
 import entities.Entity;
 import entities.Light;
+import entities.Player;
 import models.RawModel;
 import models.TexturedModel;
 import objConverter.ModelData;
@@ -30,10 +31,10 @@ public class MainGameLoop {
 		
 		Loader loader = new Loader();
 		
+		MasterRenderer renderer = new MasterRenderer();
+		
 		Camera camera = new Camera();
 		Light light = new Light(new Vector3f(3000.0f, 3000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
-		
-		MasterRenderer renderer = new MasterRenderer();
 		
 		//***************************ENTITIES***************************
 		
@@ -90,7 +91,7 @@ public class MainGameLoop {
 		flushedTexture.setHasTransparency(false);
 		flushedTexture.setUseFakeLighting(false);
 		TexturedModel texturedFlushedModel = new TexturedModel(sphereModel, flushedTexture);
-		Entity flushedEntity = new Entity(texturedFlushedModel, new Vector3f(0.0f, 10.0f, -50.0f), 0.0f, 0.0f, 0.0f, 5.0f);
+		Player player = new Player(texturedFlushedModel, new Vector3f(0.0f, 50.0f, -50.0f), 0.0f, 0.0f, 0.0f, 5.0f);
 		
 		//***************************TERRAINS***************************
 		
@@ -114,10 +115,9 @@ public class MainGameLoop {
 		long frameCount = 0;
 		while(!Display.isCloseRequested()) {
 			camera.move();
-
-			for(Terrain terrain : terrains) {
-				renderer.processTerrain(terrain);
-			}
+			
+			player.move();
+			renderer.processEntity(player);
 			
 			for (Entity fern : ferns) {
 				renderer.processEntity(fern);
@@ -128,8 +128,10 @@ public class MainGameLoop {
 			for (Entity tree : trees) {
 				renderer.processEntity(tree);
 			}
-			flushedEntity.increaseRotation(0.0f, 0.5f, 0.0f);
-			renderer.processEntity(flushedEntity);
+			
+			for(Terrain terrain : terrains) {
+				renderer.processTerrain(terrain);
+			}
 			
 			renderer.render(light, camera);
 			DisplayManager.updateDisplay();
