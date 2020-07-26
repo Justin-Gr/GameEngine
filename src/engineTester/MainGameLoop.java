@@ -7,6 +7,7 @@ import java.util.Random;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.util.vector.Vector3f;
 
+import entities.Camera;
 import entities.Entity;
 import entities.Light;
 import entities.Player;
@@ -45,8 +46,8 @@ public class MainGameLoop {
 		TexturedModel texturedFernModel = new TexturedModel(fernModel, fernTexture);
 		List<Entity> ferns = new ArrayList<Entity>();
 		for (int i = 0; i < 500; i++) {
-			float x = r.nextFloat() * 1000 - 500;
-			float z = r.nextFloat() * 1000 - 500;
+			float x = r.nextFloat() * 1600 - 800;
+			float z = r.nextFloat() * 1600 - 800;
 			ferns.add(new Entity(texturedFernModel, new Vector3f(x, 0, z), 0.0f, 0.0f, 0.0f, 1.0f));
 		}
 		
@@ -58,8 +59,8 @@ public class MainGameLoop {
 		TexturedModel texturedGrassModel = new TexturedModel(grassModel, grassTexture);
 		List<Entity> grasses = new ArrayList<Entity>();
 		for (int i = 0; i < 500; i++) {
-			float x = r.nextFloat() * 1000 - 500;
-			float z = r.nextFloat() * 1000 - 500;
+			float x = r.nextFloat() * 1600 - 800;
+			float z = r.nextFloat() * 1600 - 800;
 			grasses.add(new Entity(texturedGrassModel, new Vector3f(x, 0, z), 0.0f, 0.0f, 0.0f, 2.0f));
 		}
 		
@@ -73,8 +74,8 @@ public class MainGameLoop {
 		TexturedModel texturedTreeModel = new TexturedModel(treeModel, treeTexture);
 		List<Entity> trees = new ArrayList<Entity>();
 		for (int i = 0; i < 500; i++) {
-			float x = r.nextFloat() * 1000 - 500;
-			float z = r.nextFloat() * 1000 - 500;
+			float x = r.nextFloat() * 1600 - 800;
+			float z = r.nextFloat() * 1600 - 800;
 			trees.add(new Entity(texturedTreeModel, new Vector3f(x, 0, z), 0.0f, 0.0f, 0.0f, 1.0f));
 		}
 		
@@ -98,13 +99,14 @@ public class MainGameLoop {
 		TerrainTexturePack texturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
 		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("terrain_blendMap"));
 		List<Terrain> terrains = new ArrayList<Terrain>();
-		terrains.add(new Terrain(-1, -1, loader, texturePack, blendMap));
-		terrains.add(new Terrain( 0, -1, loader, texturePack, blendMap));
-		terrains.add(new Terrain(-1,  0, loader, texturePack, blendMap));
-		terrains.add(new Terrain( 0,  0, loader, texturePack, blendMap));
+		terrains.add(new Terrain(-1, -1, loader, texturePack, blendMap, "heightmap"));
+		terrains.add(new Terrain( 0, -1, loader, texturePack, blendMap, "heightmap"));
+		terrains.add(new Terrain(-1,  0, loader, texturePack, blendMap, "heightmap"));
+		terrains.add(new Terrain( 0,  0, loader, texturePack, blendMap, "heightmap"));
 		
 		//***************************GAME LOOP***************************
 		
+//		Camera camera = new Camera();
 		ThirdPersonCamera camera = new ThirdPersonCamera(player);
 		Light light = new Light(new Vector3f(3000.0f, 3000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		
