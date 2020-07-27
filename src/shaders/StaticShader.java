@@ -22,8 +22,8 @@ public class StaticShader extends ShaderProgram {
 	private int location_reflectivity;
 	private int location_useFakeLighting;
 	private int location_skyColor;
-	private int location_rowsNumber;
-	private int location_offset;
+	private int location_textureRowsNumber;
+	private int location_textureOffset;
 	
 	public StaticShader() {
 		super(VERTEX_FILE, FRAGMENT_FILE);
@@ -47,16 +47,16 @@ public class StaticShader extends ShaderProgram {
 		location_reflectivity = super.getUniformLocation("reflectivity");
 		location_useFakeLighting = super.getUniformLocation("useFakeLighting");
 		location_skyColor = super.getUniformLocation("skyColor");
-		location_rowsNumber = super.getUniformLocation("rowsNumber");
-		location_offset = super.getUniformLocation("offset");
+		location_textureRowsNumber = super.getUniformLocation("textureRowsNumber");
+		location_textureOffset = super.getUniformLocation("textureOffset");
 	}
 	
-	public void loadRowsNumber(int rowsNumber) {
-		super.loadFloat(location_rowsNumber, rowsNumber);
+	public void loadTextureRowsNumber(int rowsNumber) {
+		super.loadFloat(location_textureRowsNumber, rowsNumber);
 	}
 	
-	public void loadOffset(float x, float y) {
-		super.loadVector2f(location_offset, new Vector2f(x, y));
+	public void loadTextureOffset(float x, float y) {
+		super.loadVector2f(location_textureOffset, new Vector2f(x, y));
 	}
 	
 	public void loadTransformationMatrix(Matrix4f matrix) {

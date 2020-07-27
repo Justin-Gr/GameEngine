@@ -13,6 +13,8 @@ out float pass_visibility;
 uniform mat4 transformationMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
+
+// Light vars
 uniform vec3 lightPosition;
 
 // Fog vars

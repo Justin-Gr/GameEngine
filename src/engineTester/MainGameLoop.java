@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.lwjgl.opengl.Display;
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 import entities.Camera;
@@ -12,11 +13,13 @@ import entities.Entity;
 import entities.Light;
 import entities.Player;
 import entities.ThirdPersonCamera;
+import guis.GuiTexture;
 import models.RawModel;
 import models.TexturedModel;
 import objConverter.ModelData;
 import objConverter.OBJFileLoader;
 import renderEngine.DisplayManager;
+import renderEngine.GuiRenderer;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
 import terrains.Terrain;
@@ -72,7 +75,7 @@ public class MainGameLoop {
 			float z = r.nextFloat() * 1600 - 800;
 			float y = map.getTerrainFromPosition(x, z).getHeight(x, z);
 			int textureIndex = r.nextInt(4);
-			ferns.add(new Entity(texturedFernModel, textureIndex, new Vector3f(x, y, z), 0.0f, 0.0f, 0.0f, 2.0f));
+			ferns.add(new Entity(texturedFernModel, textureIndex, new Vector3f(x, y, z), 0.0f, 0.0f, 0.0f, 1.0f));
 		}
 		
 		ModelData grassData = OBJFileLoader.loadOBJ("grass");
@@ -115,13 +118,21 @@ public class MainGameLoop {
 		TexturedModel texturedFlushedModel = new TexturedModel(sphereModel, flushedTexture);
 		Player player = new Player(texturedFlushedModel, new Vector3f(0.0f, 100.0f, 0.0f), 0.0f, 180.0f, 0.0f, 3.0f);
 		
+		//***************************GUIS***************************
+		
+		GuiRenderer guiRenderer = new GuiRenderer(loader);
+		
+		List<GuiTexture> guis = new ArrayList<GuiTexture>();
+		GuiTexture flushedMeter = new GuiTexture(loader.loadTexture("gui_flushedMeter"), new Vector2f(-0.75f, -0.35f), new Vector2f(0.15f, 0.85f));
+		guis.add(flushedMeter);
+		
 		//***************************GAME LOOP***************************
 		
 //		Camera camera = new Camera();
 		ThirdPersonCamera camera = new ThirdPersonCamera(player);
 		Light light = new Light(new Vector3f(3000.0f, 3000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		
-		Terrain currentTerrain;
+		Terrain currentPlayerTerrain;
 		while(!Display.isCloseRequested()) {
 			
 			for (Entity fern : ferns) {
@@ -138,17 +149,19 @@ public class MainGameLoop {
 				renderer.processTerrain(terrain);
 			}
 
-			currentTerrain = map.getTerrainFromPosition(player.getPosition().x, player.getPosition().z);
-			player.move(currentTerrain);
+			currentPlayerTerrain = map.getTerrainFromPosition(player.getPosition().x, player.getPosition().z);
+			player.move(currentPlayerTerrain);
 			renderer.processEntity(player);
 
 			camera.move();
 			
 			renderer.render(light, camera);
+			guiRenderer.render(guis);
 			DisplayManager.updateDisplay();
 			
 		}
 		
+		guiRenderer.cleanUp();
 		renderer.cleanUp();
 		loader.cleanUp();
 		DisplayManager.closeDisplay();
