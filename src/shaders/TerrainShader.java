@@ -68,8 +68,8 @@ public class TerrainShader extends ShaderProgram {
 	}
 	
 	public void loadLight(Light light) {
-		super.loadVector(location_lightPosition, light.getPosition());
-		super.loadVector(location_lightColor, light.getColor());
+		super.loadVector3f(location_lightPosition, light.getPosition());
+		super.loadVector3f(location_lightColor, light.getColor());
 	}
 	
 	public void loadShineVariables(float damper, float reflectivity) {
@@ -78,7 +78,7 @@ public class TerrainShader extends ShaderProgram {
 	}
 	
 	public void loadSkyColor(float r, float g, float b) {
-		super.loadVector(location_skyColor, new Vector3f(r, g, b));
+		super.loadVector3f(location_skyColor, new Vector3f(r, g, b));
 	}
 	
 	public void connectTextureUnits() {

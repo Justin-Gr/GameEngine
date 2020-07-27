@@ -13,8 +13,14 @@ out float pass_visibility;
 uniform mat4 transformationMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
+
+// Light vars
 uniform vec3 lightPosition;
 uniform float useFakeLighting;
+
+// Texture atlas vars
+uniform float rowsNumber;
+uniform vec2 offset;
 
 // Fog vars
 const float density = 0.002;
@@ -33,7 +39,7 @@ void main(void) {
 	
 	float distance = length(positionRelativeToCam.xyz);
 	
-	pass_textureCoords = textureCoords;
+	pass_textureCoords = (textureCoords / rowsNumber) + offset;
 	pass_surfaceNormal = actualNormal;
 	pass_toLightVector = lightPosition - worldPosition.xyz;
 	pass_toCameraVector = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPosition.xyz;
