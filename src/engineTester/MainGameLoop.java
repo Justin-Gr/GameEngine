@@ -23,6 +23,7 @@ import renderEngine.GuiRenderer;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
 import terrains.Terrain;
+import terrains.ModeledTerrain;
 import terrains.TerrainMap;
 import textures.ModelTexture;
 import textures.TerrainTexture;
@@ -46,15 +47,13 @@ public class MainGameLoop {
 		TerrainTexturePack texturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
 		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("terrain_blendMap"));
 		
-		List<Terrain> terrains = new ArrayList<Terrain>();
-		terrains.add(new Terrain(-1, -1, loader, texturePack, blendMap, "heightmap_valley"));
-		terrains.add(new Terrain( 0, -1, loader, texturePack, blendMap, "heightmap_valley"));
-		terrains.add(new Terrain(-1,  0, loader, texturePack, blendMap, "heightmap_valley"));
-		terrains.add(new Terrain( 0,  0, loader, texturePack, blendMap, "heightmap_valley"));
+		List<ModeledTerrain> terrains = new ArrayList<ModeledTerrain>();
+		terrains.add(new ModeledTerrain(-1, -1, loader, texturePack, blendMap, "heightmap_valley"));
+		terrains.add(new ModeledTerrain( 0, -1, loader, texturePack, blendMap, "heightmap_valley"));
+		terrains.add(new ModeledTerrain(-1,  0, loader, texturePack, blendMap, "heightmap_valley"));
+		terrains.add(new ModeledTerrain( 0,  0, loader, texturePack, blendMap, "heightmap_valley"));
 		
-		Terrain defaultFlatTerrain = new Terrain(0, 0, loader, texturePack, blendMap, "heightmap_flat");
-		
-		TerrainMap map = new TerrainMap(terrains, defaultFlatTerrain);
+		TerrainMap map = new TerrainMap(terrains);
 		
 		//***************************ENTITIES***************************
 		
@@ -132,7 +131,6 @@ public class MainGameLoop {
 		ThirdPersonCamera camera = new ThirdPersonCamera(player);
 		Light light = new Light(new Vector3f(3000.0f, 3000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		
-		Terrain currentPlayerTerrain;
 		while(!Display.isCloseRequested()) {
 			
 			for (Entity fern : ferns) {
@@ -145,11 +143,11 @@ public class MainGameLoop {
 				renderer.processEntity(tree);
 			}
 			
-			for(Terrain terrain : terrains) {
+			for(ModeledTerrain terrain : terrains) {
 				renderer.processTerrain(terrain);
 			}
 
-			currentPlayerTerrain = map.getTerrainFromPosition(player.getPosition().x, player.getPosition().z);
+			Terrain currentPlayerTerrain = map.getTerrainFromPosition(player.getPosition().x, player.getPosition().z);
 			player.move(currentPlayerTerrain);
 			renderer.processEntity(player);
 

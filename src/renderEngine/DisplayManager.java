@@ -46,7 +46,7 @@ public class DisplayManager {
 		long currentFrameTime = getCurrentTime();
 		deltaTime = (currentFrameTime - lastFrameTime) / 1000f;
 		lastFrameTime = currentFrameTime;
-		updateFramerate();		
+		updateFramerate();
 	}
 	
 	public static void closeDisplay() {

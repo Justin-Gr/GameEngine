@@ -2,8 +2,8 @@ package terrains;
 
 public class TerrainGridPos {
 
-	private int x;
-	private int z;
+	private final int x;
+	private final int z;
 	
 	public TerrainGridPos(int x, int z) {
 		this.x = x;

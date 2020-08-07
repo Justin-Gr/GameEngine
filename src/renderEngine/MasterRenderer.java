@@ -15,7 +15,7 @@ import entities.Light;
 import models.TexturedModel;
 import shaders.StaticShader;
 import shaders.TerrainShader;
-import terrains.Terrain;
+import terrains.ModeledTerrain;
 import toolbox.Maths;
 
 public class MasterRenderer {
@@ -37,7 +37,7 @@ public class MasterRenderer {
 	private TerrainRenderer terrainRenderer;
 	
 	private Map<TexturedModel, List<Entity>> entities = new HashMap<TexturedModel, List<Entity>>();
-	private List<Terrain> terrains = new ArrayList<Terrain>();
+	private List<ModeledTerrain> terrains = new ArrayList<ModeledTerrain>();
 	
 	public MasterRenderer() {
 		enableCulling();
@@ -52,7 +52,6 @@ public class MasterRenderer {
 		GL11.glClearColor(RED, GREEN, BLUE, 1.0f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 	}
-	
 	
 	public static void enableCulling() {
 		GL11.glEnable(GL11.GL_CULL_FACE);
@@ -96,7 +95,7 @@ public class MasterRenderer {
 		}
 	}
 	
-	public void processTerrain(Terrain terrain) {
+	public void processTerrain(ModeledTerrain terrain) {
 		terrains.add(terrain);
 	}
 	
