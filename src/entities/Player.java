@@ -1,5 +1,7 @@
 package entities;
 
+import java.util.Optional;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.util.vector.Vector3f;
 
@@ -24,7 +26,7 @@ public class Player extends Entity {
 		super(model, position, rotX, rotY, rotZ, scale);
 	}
 
-	public void move(Terrain terrain) {
+	public void move(Optional<Terrain> terrain) {
 		checkInputs();
 		super.increaseRotation(0, currentTurnSpeed * DisplayManager.getFrameTimeSeconds(), 0);
 		float distance = currentRunSpeed * DisplayManager.getFrameTimeSeconds();
@@ -34,7 +36,7 @@ public class Player extends Entity {
 		float dz = (float) (distance * Math.cos(Math.toRadians(super.getRotY())));
 		super.increasePosition(dx, dy, dz);
 		
-		float terrainHeight = terrain.getHeight(super.getPosition().x, super.getPosition().z);
+		float terrainHeight = terrain.isPresent() ? terrain.get().getHeight(super.getPosition().x, super.getPosition().z) : Float.NEGATIVE_INFINITY;
 		if (super.getPosition().y < terrainHeight) {
 			currentUpwardsSpeed = 0;
 			onGround = true;

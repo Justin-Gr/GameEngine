@@ -15,7 +15,7 @@ import entities.Light;
 import models.TexturedModel;
 import shaders.StaticShader;
 import shaders.TerrainShader;
-import terrains.ModeledTerrain;
+import terrains.Terrain;
 import toolbox.Maths;
 
 public class MasterRenderer {
@@ -37,7 +37,7 @@ public class MasterRenderer {
 	private TerrainRenderer terrainRenderer;
 	
 	private Map<TexturedModel, List<Entity>> entities = new HashMap<TexturedModel, List<Entity>>();
-	private List<ModeledTerrain> terrains = new ArrayList<ModeledTerrain>();
+	private List<Terrain> terrains = new ArrayList<Terrain>();
 	
 	public MasterRenderer() {
 		enableCulling();
@@ -95,7 +95,7 @@ public class MasterRenderer {
 		}
 	}
 	
-	public void processTerrain(ModeledTerrain terrain) {
+	public void processTerrain(Terrain terrain) {
 		terrains.add(terrain);
 	}
 	

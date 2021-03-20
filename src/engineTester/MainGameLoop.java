@@ -2,6 +2,7 @@ package engineTester;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import org.lwjgl.opengl.Display;
@@ -23,7 +24,6 @@ import renderEngine.GuiRenderer;
 import renderEngine.Loader;
 import renderEngine.MasterRenderer;
 import terrains.Terrain;
-import terrains.ModeledTerrain;
 import terrains.TerrainMap;
 import textures.ModelTexture;
 import textures.TerrainTexture;
@@ -47,11 +47,11 @@ public class MainGameLoop {
 		TerrainTexturePack texturePack = new TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture);
 		TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("terrain_blendMap"));
 		
-		List<ModeledTerrain> terrains = new ArrayList<ModeledTerrain>();
-		terrains.add(new ModeledTerrain(-1, -1, loader, texturePack, blendMap, "heightmap_valley"));
-		terrains.add(new ModeledTerrain( 0, -1, loader, texturePack, blendMap, "heightmap_valley"));
-		terrains.add(new ModeledTerrain(-1,  0, loader, texturePack, blendMap, "heightmap_valley"));
-		terrains.add(new ModeledTerrain( 0,  0, loader, texturePack, blendMap, "heightmap_valley"));
+		List<Terrain> terrains = new ArrayList<Terrain>();
+		terrains.add(new Terrain(-1, -1, loader, texturePack, blendMap, "heightmap_valley"));
+		terrains.add(new Terrain( 0, -1, loader, texturePack, blendMap, "heightmap_valley"));
+		terrains.add(new Terrain(-1,  0, loader, texturePack, blendMap, "heightmap_valley"));
+		terrains.add(new Terrain( 0,  0, loader, texturePack, blendMap, "heightmap_valley"));
 		
 		TerrainMap map = new TerrainMap(terrains);
 		
@@ -72,7 +72,8 @@ public class MainGameLoop {
 		for (int i = 0; i < 500; i++) {
 			float x = r.nextFloat() * 1600 - 800;
 			float z = r.nextFloat() * 1600 - 800;
-			float y = map.getTerrainFromPosition(x, z).getHeight(x, z);
+			Optional<Terrain> fernTerrain = map.getTerrainFromPosition(x, z);
+			float y = fernTerrain.isPresent() ? fernTerrain.get().getHeight(x, z) : 0;
 			int textureIndex = r.nextInt(4);
 			ferns.add(new Entity(texturedFernModel, textureIndex, new Vector3f(x, y, z), 0.0f, 0.0f, 0.0f, 1.0f));
 		}
@@ -87,7 +88,8 @@ public class MainGameLoop {
 		for (int i = 0; i < 500; i++) {
 			float x = r.nextFloat() * 1600 - 800;
 			float z = r.nextFloat() * 1600 - 800;
-			float y = map.getTerrainFromPosition(x, z).getHeight(x, z);
+			Optional<Terrain> grassTerrain = map.getTerrainFromPosition(x, z);
+			float y = grassTerrain.isPresent() ? grassTerrain.get().getHeight(x, z) : 0;
 			grasses.add(new Entity(texturedGrassModel, new Vector3f(x, y, z), 0.0f, 0.0f, 0.0f, 2.0f));
 		}
 		
@@ -103,7 +105,8 @@ public class MainGameLoop {
 		for (int i = 0; i < 500; i++) {
 			float x = r.nextFloat() * 1600 - 800;
 			float z = r.nextFloat() * 1600 - 800;
-			float y = map.getTerrainFromPosition(x, z).getHeight(x, z);
+			Optional<Terrain> treeTerrain = map.getTerrainFromPosition(x, z);
+			float y = treeTerrain.isPresent() ? treeTerrain.get().getHeight(x, z) : 0;
 			trees.add(new Entity(texturedTreeModel, new Vector3f(x, y, z), 0.0f, 0.0f, 0.0f, 1.0f));
 		}
 		
@@ -143,11 +146,11 @@ public class MainGameLoop {
 				renderer.processEntity(tree);
 			}
 			
-			for(ModeledTerrain terrain : terrains) {
+			for(Terrain terrain : terrains) {
 				renderer.processTerrain(terrain);
 			}
 
-			Terrain currentPlayerTerrain = map.getTerrainFromPosition(player.getPosition().x, player.getPosition().z);
+			Optional<Terrain> currentPlayerTerrain = map.getTerrainFromPosition(player.getPosition().x, player.getPosition().z);
 			player.move(currentPlayerTerrain);
 			renderer.processEntity(player);
 
