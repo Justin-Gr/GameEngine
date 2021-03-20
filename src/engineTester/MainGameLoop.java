@@ -73,7 +73,7 @@ public class MainGameLoop {
 			float x = r.nextFloat() * 1600 - 800;
 			float z = r.nextFloat() * 1600 - 800;
 			Optional<Terrain> fernTerrain = map.getTerrainFromPosition(x, z);
-			float y = fernTerrain.isPresent() ? fernTerrain.get().getHeight(x, z) : 0;
+			float y = fernTerrain.map(terrain -> terrain.getHeight(x, z)).orElse(0F);
 			int textureIndex = r.nextInt(4);
 			ferns.add(new Entity(texturedFernModel, textureIndex, new Vector3f(x, y, z), 0.0f, 0.0f, 0.0f, 1.0f));
 		}
@@ -89,7 +89,7 @@ public class MainGameLoop {
 			float x = r.nextFloat() * 1600 - 800;
 			float z = r.nextFloat() * 1600 - 800;
 			Optional<Terrain> grassTerrain = map.getTerrainFromPosition(x, z);
-			float y = grassTerrain.isPresent() ? grassTerrain.get().getHeight(x, z) : 0;
+			float y = grassTerrain.map(terrain -> terrain.getHeight(x, z)).orElse(0F);
 			grasses.add(new Entity(texturedGrassModel, new Vector3f(x, y, z), 0.0f, 0.0f, 0.0f, 2.0f));
 		}
 		
@@ -106,7 +106,7 @@ public class MainGameLoop {
 			float x = r.nextFloat() * 1600 - 800;
 			float z = r.nextFloat() * 1600 - 800;
 			Optional<Terrain> treeTerrain = map.getTerrainFromPosition(x, z);
-			float y = treeTerrain.isPresent() ? treeTerrain.get().getHeight(x, z) : 0;
+			float y = treeTerrain.map(terrain -> terrain.getHeight(x, z)).orElse(0F);
 			trees.add(new Entity(texturedTreeModel, new Vector3f(x, y, z), 0.0f, 0.0f, 0.0f, 1.0f));
 		}
 		
@@ -151,7 +151,11 @@ public class MainGameLoop {
 			}
 
 			Optional<Terrain> currentPlayerTerrain = map.getTerrainFromPosition(player.getPosition().x, player.getPosition().z);
-			player.move(currentPlayerTerrain);
+			if (currentPlayerTerrain.isPresent()) {
+				player.moveOnTerrain(currentPlayerTerrain.get());
+			} else {
+				player.move();
+			}
 			renderer.processEntity(player);
 
 			camera.move();
