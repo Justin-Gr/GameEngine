@@ -131,7 +131,7 @@ public class MainGameLoop {
 		//***************************GAME LOOP***************************
 		
 //		Camera camera = new Camera();
-		ThirdPersonCamera camera = new ThirdPersonCamera(player);
+		Camera camera = new ThirdPersonCamera(player);
 		Light light = new Light(new Vector3f(3000.0f, 3000.0f, 3000.0f), new Vector3f(1.0f, 1.0f, 1.0f));
 		
 		while(!Display.isCloseRequested()) {
@@ -151,11 +151,8 @@ public class MainGameLoop {
 			}
 
 			Optional<Terrain> currentPlayerTerrain = map.getTerrainFromPosition(player.getPosition().x, player.getPosition().z);
-			if (currentPlayerTerrain.isPresent()) {
-				player.moveOnTerrain(currentPlayerTerrain.get());
-			} else {
-				player.move();
-			}
+			currentPlayerTerrain.ifPresentOrElse(player::moveOnTerrain, player::move);
+
 			renderer.processEntity(player);
 
 			camera.move();

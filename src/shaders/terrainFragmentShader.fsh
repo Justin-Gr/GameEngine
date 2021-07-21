@@ -39,20 +39,20 @@ void main(void) {
 	vec3 unitSurfaceNormal = normalize(pass_surfaceNormal);			// vecteurs unitaires
 	vec3 unitToLightVector = normalize(pass_toLightVector);
 	
-	float brightness = dot(unitSurfaceNormal, unitToLightVector);	// produit scalaire <normale, lumière>
+	float brightness = dot(unitSurfaceNormal, unitToLightVector);	// produit scalaire <normale, lumiï¿½re>
 	brightness = max(brightness, 0.2);
-	vec3 diffuse = brightness * lightColor;							// coloration de la lumière
+	vec3 diffuse = brightness * lightColor;							// coloration de la lumiï¿½re
 	
 	// SPECULAR LIGHTING
 	
 	vec3 unitToCameraVector = normalize(pass_toCameraVector);							// vecteurs unitaires
 	vec3 unitFromLightVector = -unitToLightVector;
-	vec3 reflectedFromLightVector = reflect(unitFromLightVector, unitSurfaceNormal);	// réflexion de la lumière sur la surface
+	vec3 reflectedFromLightVector = reflect(unitFromLightVector, unitSurfaceNormal);	// rï¿½flexion de la lumiï¿½re sur la surface
 	
-	float specularFactor = dot(reflectedFromLightVector, unitToCameraVector);			// produit scalaire <lumière réflechie, direction camera>
+	float specularFactor = dot(reflectedFromLightVector, unitToCameraVector);			// produit scalaire <lumiï¿½re rï¿½flechie, direction camera>
 	specularFactor = max(specularFactor, 0.0);
-	float dampedFactor = pow(specularFactor, shineDamper); 								// sensibilité de l'effet de réflexion
-	vec3 finalSpecular = reflectivity * dampedFactor * lightColor; 						// coloration de la lumière et intensité de la réflexion
+	float dampedFactor = pow(specularFactor, shineDamper); 								// sensibilitï¿½ de l'effet de rï¿½flexion
+	vec3 finalSpecular = reflectivity * dampedFactor * lightColor; 						// coloration de la lumiï¿½re et intensitï¿½ de la rï¿½flexion
 
 	// FINAL COLOR
 
